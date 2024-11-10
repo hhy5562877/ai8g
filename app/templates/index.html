@@ -2,50 +2,32 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI占卦系统</title>
-    <style>
-        body {
-            font-family: 'Microsoft YaHei', sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        #result {
-            margin-top: 20px;
-            min-height: 200px;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.1.0/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
 </head>
 <body>
     <div class="container">
-        <h1>AI占卦系统</h1>
-        <textarea id="userInput" rows="4" style="width: 100%" placeholder="请输入你想问的问题..."></textarea>
-        <button onclick="getDivination()">开始占卦</button>
-        <div id="result"></div>
+        <div class="input-card">
+            <h1>AI 占卦系统</h1>
+            <div class="input-group">
+                <textarea 
+                    id="userInput" 
+                    rows="4" 
+                    placeholder="请输入你想问的问题..."
+                    maxlength="500"
+                ></textarea>
+                <div class="char-count" id="charCount">0/500</div>
+            </div>
+            <button onclick="getDivination()" id="submitBtn">
+                <span>开始占卦</span>
+            </button>
+        </div>
+        <div class="result-card" id="resultCard">
+            <div id="result"></div>
+        </div>
     </div>
-
-    <script>
-        async function getDivination() {
-            const userInput = document.getElementById('userInput').value;
-            const resultDiv = document.getElementById('result');
-            
-            try {
-                const response = await fetch('/api/divine?user_input=' + encodeURIComponent(userInput), {
-                    method: 'POST'
-                });
-                const data = await response.json();
-                resultDiv.innerHTML = data.svg;
-            } catch (error) {
-                resultDiv.innerHTML = '占卦失败：' + error.message;
-            }
-        }
-    </script>
+    <script src="{{ url_for('static', path='/js/main.js') }}"></script>
 </body>
 </html> 

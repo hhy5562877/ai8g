@@ -6,12 +6,28 @@
 ```
 aibg/
 ├── app/
-│ ├── api/ # API 路由
-│ ├── core/ # 核心配置和服务
-│ ├── services/ # 业务逻辑
-│ └── templates/ # HTML 模板
-├── requirements.txt # 项目依赖
-└── README.md # 项目说明
+│   ├── __init__.py
+│   ├── main.py
+│   ├── api/
+│   │   ├── __init__.py
+│   │   └── endpoints.py
+│   ├── core/
+│   │   ├── __init__.py
+│   │   ├── config.py
+│   │   └── claude_client.py
+│   ├── services/
+│   │   ├── __init__.py
+│   │   └── divination_service.py
+│   ├── static/
+│   │   ├── css/
+│   │   │   └── style.css
+│   │   └── js/
+│   │       └── main.js
+│   └── templates/
+│       └── index.html
+├── .env
+├── .gitignore
+└── requirements.txt 
 ```
 ## 安装部署
 

@@ -1,0 +1,24 @@
+aibg/
+├── app/
+│   ├── __init__.py
+│   ├── main.py
+│   ├── api/
+│   │   ├── __init__.py
+│   │   └── endpoints.py
+│   ├── core/
+│   │   ├── __init__.py
+│   │   ├── config.py
+│   │   └── claude_client.py
+│   ├── services/
+│   │   ├── __init__.py
+│   │   └── divination_service.py
+│   ├── static/
+│   │   ├── css/
+│   │   │   └── style.css
+│   │   └── js/
+│   │       └── main.js
+│   └── templates/
+│       └── index.html
+├── .env
+├── .gitignore
+└── requirements.txt 
