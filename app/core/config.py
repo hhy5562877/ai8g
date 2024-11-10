@@ -3,8 +3,8 @@ from functools import lru_cache
 
 class Settings(BaseSettings):
     CLAUDE_API_KEY: str
-    CLAUDE_BASE_URL: str = "https://api.anthropic.com"
-    
+    CLAUDE_BASE_URL: str
+
     class Config:
         env_file = ".env"
 

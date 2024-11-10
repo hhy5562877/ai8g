@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI占卦系统</title>
+    <title>AI 占卦系统 - 探索命运的奥秘</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.1.0/style.css">
     <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☯</text></svg>">
 </head>
 <body>
     <div class="container">
@@ -15,16 +16,17 @@
                 <textarea 
                     id="userInput" 
                     rows="4" 
-                    placeholder="请输入你想问的问题..."
+                    placeholder="请详细描述你想问的问题..."
                     maxlength="500"
+                    aria-label="占卦问题输入框"
                 ></textarea>
                 <div class="char-count" id="charCount">0/500</div>
             </div>
-            <button onclick="getDivination()" id="submitBtn">
+            <button onclick="getDivination()" id="submitBtn" aria-label="开始占卦">
                 <span>开始占卦</span>
             </button>
         </div>
-        <div class="result-card" id="resultCard">
+        <div class="result-card" id="resultCard" role="region" aria-label="占卦结果">
             <div id="result"></div>
         </div>
     </div>
