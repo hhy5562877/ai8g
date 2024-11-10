@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>AI占卦系统</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        #result {
+            margin-top: 20px;
+            min-height: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI占卦系统</h1>
+        <textarea id="userInput" rows="4" style="width: 100%" placeholder="请输入你想问的问题..."></textarea>
+        <button onclick="getDivination()">开始占卦</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function getDivination() {
+            const userInput = document.getElementById('userInput').value;
+            const resultDiv = document.getElementById('result');
+            
+            try {
+                const response = await fetch('/api/divine?user_input=' + encodeURIComponent(userInput), {
+                    method: 'POST'
+                });
+                const data = await response.json();
+                resultDiv.innerHTML = data.svg;
+            } catch (error) {
+                resultDiv.innerHTML = '占卦失败：' + error.message;
+            }
+        }
+    </script>
+</body>
+</html> 
