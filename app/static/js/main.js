@@ -2,6 +2,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const textarea = document.getElementById('userInput');
     const charCount = document.getElementById('charCount');
     
+    // 自动调整文本框高度
+    function autoExpand(field) {
+        field.style.height = 'inherit';
+        const computed = window.getComputedStyle(field);
+        const height = parseInt(computed.getPropertyValue('border-top-width'), 10)
+                    + parseInt(computed.getPropertyValue('padding-top'), 10)
+                    + field.scrollHeight
+                    + parseInt(computed.getPropertyValue('padding-bottom'), 10)
+                    + parseInt(computed.getPropertyValue('border-bottom-width'), 10);
+        
+        field.style.height = `${Math.min(height, 300)}px`;
+    }
+    
     textarea.addEventListener('input', function() {
         const length = this.value.length;
         charCount.textContent = `${length}/500`;
@@ -11,16 +24,12 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             charCount.style.color = '#6b7280';
         }
+        
+        autoExpand(this);
     });
 
-    // 添加输入框动画效果
-    textarea.addEventListener('focus', function() {
-        this.parentElement.style.transform = 'scale(1.01)';
-    });
-
-    textarea.addEventListener('blur', function() {
-        this.parentElement.style.transform = 'scale(1)';
-    });
+    // 初始化时调整一次高度
+    autoExpand(textarea);
 });
 
 async function getDivination() {
@@ -29,6 +38,7 @@ async function getDivination() {
     const resultCard = document.getElementById('resultCard');
     const submitBtn = document.getElementById('submitBtn');
     const btnText = submitBtn.querySelector('span');
+    const loadingDiv = document.getElementById('divinationLoading');
     
     if (!userInput.value.trim()) {
         userInput.classList.add('shake');
@@ -40,17 +50,33 @@ async function getDivination() {
         submitBtn.disabled = true;
         btnText.innerHTML = '占卦中...';
         
-        // 显示加载动画
-        resultDiv.innerHTML = `
-            <div class="loading-container">
-                <div class="loading"></div>
-                <div class="loading-text">正在推演卦象...</div>
-            </div>
-        `;
+        // 显示结果卡片和加载动画
+        resultCard.classList.add('show');
+        resultDiv.style.display = 'none';
+        loadingDiv.style.display = 'flex';
+        
+        // 平滑滚动到结果区域
+        resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        const loadingTexts = [
+            '聚气凝神...',
+            '推演卦象...',
+            '解读天机...',
+            '生成卦象...'
+        ];
+        
+        let currentTextIndex = 0;
+        const loadingTextElement = loadingDiv.querySelector('.loading-text');
+        const textInterval = setInterval(() => {
+            loadingTextElement.textContent = loadingTexts[currentTextIndex];
+            currentTextIndex = (currentTextIndex + 1) % loadingTexts.length;
+        }, 2000);
         
         const response = await fetch('/api/divine?user_input=' + encodeURIComponent(userInput.value), {
             method: 'POST'
         });
+        
+        clearInterval(textInterval);
         
         if (!response.ok) {
             throw new Error('服务器响应错误');
@@ -58,28 +84,24 @@ async function getDivination() {
         
         const data = await response.json();
         
-        // 提取SVG内容
-        const svgContent = data.svg;
+        // 隐藏加载动画，显示结果
+        loadingDiv.style.display = 'none';
+        resultDiv.style.display = 'block';
         
-        // 创建SVG容器并添加动画效果
         resultDiv.innerHTML = `
             <div class="svg-container">
-                ${svgContent}
+                ${data.svg}
             </div>
         `;
         
-        // 触发动画
         setTimeout(() => {
             const svgContainer = resultDiv.querySelector('.svg-container');
             svgContainer.classList.add('show');
         }, 100);
         
-        // 滚动到结果区域
-        if (window.innerWidth <= 768) {
-            resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-        
     } catch (error) {
+        loadingDiv.style.display = 'none';
+        resultDiv.style.display = 'block';
         resultDiv.innerHTML = `
             <div class="error-message">
                 <svg xmlns="http://www.w3.org/2000/svg" class="error-icon" viewBox="0 0 20 20" fill="currentColor">

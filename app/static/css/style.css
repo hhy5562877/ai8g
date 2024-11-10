@@ -24,13 +24,12 @@ body {
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 800px;
     margin: 2rem auto;
     padding: 0 1.5rem;
-    display: grid;
-    grid-template-columns: 1fr 1.5fr;
+    display: flex;
+    flex-direction: column;
     gap: 2rem;
-    align-items: start;
 }
 
 .input-card, .result-card {
@@ -57,12 +56,23 @@ body {
 }
 
 .result-card {
-    min-height: 600px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+    background: var(--card-bg);
+    border-radius: 1.5rem;
+    box-shadow: 
+        0 4px 6px -1px rgba(0, 0, 0, 0.05),
+        0 2px 4px -1px rgba(0, 0, 0, 0.03),
+        0 0 0 1px rgba(0, 0, 0, 0.02);
+    padding: 2rem;
+    display: none;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.result-card.show {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
 }
 
 h1 {
@@ -100,13 +110,14 @@ textarea {
     padding: 1.25rem;
     border: 2px solid var(--border-color);
     border-radius: 1rem;
-    resize: vertical;
-    min-height: 150px;
+    resize: none;
+    height: 150px;
     font-size: 1.1rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     background: linear-gradient(to bottom, #fff, #f8fafc);
     font-family: inherit;
     line-height: 1.8;
+    overflow: hidden;
 }
 
 textarea:focus {
@@ -183,6 +194,8 @@ button:disabled {
     opacity: 0;
     transform: translateY(20px) scale(0.98);
     transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    padding: 20px;
 }
 
 .svg-container.show {
@@ -223,13 +236,38 @@ button:disabled {
     50% { opacity: .7; }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 768px) {
     .container {
-        grid-template-columns: 1fr;
+        margin: 1rem auto;
+        padding: 0 1rem;
     }
-    
-    .input-card {
-        position: static;
+
+    .input-card, .result-card {
+        padding: 1.5rem;
+        border-radius: 1rem;
+    }
+
+    textarea {
+        font-size: 1rem;
+        padding: 1rem;
+    }
+
+    h1 {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .taiji-container {
+        width: 100px;
+        height: 100px;
+    }
+
+    .loading-text {
+        font-size: 1rem;
+    }
+
+    .background-decoration {
+        display: none;
     }
 }
 
@@ -272,4 +310,155 @@ button:disabled {
     20%, 80% { transform: translate3d(2px, 0, 0); }
     30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
     40%, 60% { transform: translate3d(4px, 0, 0); }
-} 
+}
+
+.background-decoration {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.03;
+}
+
+.trigram {
+    position: absolute;
+    font-size: 8rem;
+    color: var(--primary-color);
+    opacity: 0.5;
+    animation: float 20s infinite ease-in-out;
+}
+
+.trigram-1 { top: 5%; left: 5%; animation-delay: 0s; }
+.trigram-2 { top: 15%; right: 10%; animation-delay: -2s; }
+.trigram-3 { top: 45%; left: 8%; animation-delay: -4s; }
+.trigram-4 { top: 65%; right: 5%; animation-delay: -6s; }
+.trigram-5 { bottom: 15%; left: 12%; animation-delay: -8s; }
+.trigram-6 { top: 25%; left: 50%; animation-delay: -10s; }
+.trigram-7 { bottom: 30%; right: 15%; animation-delay: -12s; }
+.trigram-8 { bottom: 5%; left: 50%; animation-delay: -14s; }
+
+@keyframes float {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(10px, -10px) rotate(2deg); }
+    50% { transform: translate(0, 15px) rotate(-2deg); }
+    75% { transform: translate(-10px, -5px) rotate(1deg); }
+}
+
+.card-content {
+    max-height: 90vh;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.card-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.card-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+}
+
+.card-content::-webkit-scrollbar-thumb {
+    background: var(--primary-light);
+    border-radius: 4px;
+}
+
+.divination-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+}
+
+.taiji-container {
+    width: 120px;
+    height: 120px;
+    position: relative;
+}
+
+.taiji {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: linear-gradient(90deg, var(--primary-color) 50%, white 50%);
+    animation: rotate 3s linear infinite;
+    position: relative;
+}
+
+.taiji::before,
+.taiji::after {
+    content: '';
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    border-radius: 50%;
+}
+
+.taiji::before {
+    top: 0;
+    left: 25%;
+    background: var(--primary-color);
+    background: radial-gradient(circle at center, white 25%, var(--primary-color) 25%);
+}
+
+.taiji::after {
+    bottom: 0;
+    left: 25%;
+    background: white;
+    background: radial-gradient(circle at center, var(--primary-color) 25%, white 25%);
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.loading-text {
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    text-align: center;
+    animation: pulse 2s infinite;
+    position: relative;
+}
+
+.loading-text::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+    animation: loading-line 2s infinite;
+}
+
+@keyframes loading-line {
+    0% { transform: scaleX(0); opacity: 0; }
+    50% { transform: scaleX(1); opacity: 1; }
+    100% { transform: scaleX(0); opacity: 0; }
+}
+
+.svg-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    animation: border-glow 3s infinite;
+}
+
+@keyframes border-glow {
+    0%, 100% { border-color: transparent; }
+    50% { border-color: var(--primary-light); }
+}
+
+.auto-expand {
+    transition: height 0.3s ease;
+}
